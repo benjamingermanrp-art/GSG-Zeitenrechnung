@@ -1,0 +1,42 @@
+name: Discord-Mitglieder aktualisieren
+
+on:
+  workflow_dispatch:       # Button auf der Seite bzw. "Run workflow" auf GitHub
+  schedule:
+    - cron: '0 */6 * * *'  # zusätzlich alle 6 Stunden automatisch
+
+permissions:
+  contents: write
+
+concurrency:
+  group: discord-members
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Mitglieder von Discord laden
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        run: node scripts/fetch-discord-members.js
+
+      - name: Änderungen speichern
+        run: |
+          if [ -z "$(git status --porcelain -- discord-members.json)" ]; then
+            echo "Keine Änderungen."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add discord-members.json
+          git commit -m "Discord-Mitglieder aktualisiert"
+          git pull --rebase
+          git push

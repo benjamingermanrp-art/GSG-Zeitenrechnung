@@ -117,7 +117,7 @@ function parseMelonlyLine(rawLine, rates = DEFAULT_RATES, discordMapping = {}) {
 
   const discordUser = (discordMapping[callsign] || '').replace(/^@+/, '').trim();
   const botCommand = discordUser.length > 0
-    ? `/economy add user:@${discordUser} money:${payout}`
+    ? `/economy add user:@${discordUser} amount:${payout} location:wallet`
     : '';
 
   return {
@@ -229,13 +229,13 @@ function testDiscordMappingAndCommands() {
   const line1 = "@[GUF-68] Sarah Salzberg - 11 hours 56 minutes - 3 hours required";
   const res1 = parseMelonlyLine(line1, DEFAULT_RATES, mockStorage);
   assert.strictEqual(res1.discordUser, 'sarah_salzberg');
-  assert.strictEqual(res1.botCommand, '/economy add user:@sarah_salzberg money:54893');
+  assert.strictEqual(res1.botCommand, '/economy add user:@sarah_salzberg amount:54893 location:wallet');
 
   const line2 = "@[GK-02] Sven Wood - 3 hours 25 minutes - 0 hours required";
   const res2 = parseMelonlyLine(line2, DEFAULT_RATES, mockStorage);
   // Must automatically strip duplicate @
   assert.strictEqual(res2.discordUser, 'sven.wood');
-  assert.strictEqual(res2.botCommand, '/economy add user:@sven.wood money:61500');
+  assert.strictEqual(res2.botCommand, '/economy add user:@sven.wood amount:61500 location:wallet');
 
   // Unmapped user
   const line3 = "@[GRE-33] Oskar Zuckerberger - 10 hours 52 minutes - 2 hours required";

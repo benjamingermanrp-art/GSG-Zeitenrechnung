@@ -159,10 +159,10 @@ function testBulkCommandExcludesZero() {
   // Bulk commands generation: rec.payout > 0 is strictly enforced
   const commands = members
     .filter(rec => rec.payout > 0 && rec.discordUser && rec.discordUser.trim().length > 0)
-    .map(rec => `/economy add user:@${rec.discordUser.trim()} money:${rec.payout}`);
+    .map(rec => `/economy add user:@${rec.discordUser.trim()} amount:${rec.payout} location:wallet`);
 
   assert.strictEqual(commands.length, 1);
-  assert.strictEqual(commands[0], '/economy add user:@sarah money:54893');
+  assert.strictEqual(commands[0], '/economy add user:@sarah amount:54893 location:wallet');
 
   console.log('✔ [4/4] Bulk-Export-Sicherheit nachgewiesen: 0 € Einträge generieren niemals versehentlich Starred-Bot Commands.\n');
 }

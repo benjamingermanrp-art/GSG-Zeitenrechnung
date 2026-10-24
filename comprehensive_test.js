@@ -13,13 +13,13 @@ function testHttpServer() {
       res.on('data', chunk => { data += chunk; });
       res.on('end', () => {
         assert.strictEqual(res.statusCode, 200, 'Server must respond with status 200');
-        assert(data.includes('SYSTEM BEREIT / SECURE PARSER'), 'HTML must include system badge');
+        assert(data.includes('LIVE · PARSER AKTIV'), 'HTML must include live badge');
         assert(data.includes('Jede Schicht erfassen'), 'HTML must include headline start');
         assert(data.includes('sekundengenau bezahlt.'), 'HTML must include headline end');
         assert(data.includes('Abrechnung berechnen'), 'HTML must include calculate button');
         assert(data.includes('Beispieldaten laden'), 'HTML must include sample button');
         assert(data.includes('Eingabe leeren'), 'HTML must include clear button');
-        assert(data.includes('Komplette Liste als Text kopieren'), 'HTML must include bulk copy button');
+        assert(data.includes('Auszahlungsliste'), 'HTML must include bulk copy button');
         console.log('✔ [1/4] HTTP Server & HTML Strukturprüfung erfolgreich (200 OK, alle UI-Komponenten vorhanden).');
         resolve();
       });

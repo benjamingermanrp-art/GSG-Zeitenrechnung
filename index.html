@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Melonly Payroll & Discord Command Engine | Roblox Department</title>
+  <title>GSG Zeitenrechnung</title>
   
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,9 +42,28 @@
     }
     body {
       background-color: #060709;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 22px 22px;
       color: #F8FAFC;
       font-family: 'Inter', sans-serif;
       font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+
+    /* Nummerierte Arbeitsschritte */
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.5rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+      border-radius: 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #C7D2FE;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(129, 140, 248, 0.3);
     }
     
     .font-mono {
@@ -106,8 +125,8 @@
 
     /* Completed Row State */
     .row-completed {
-      opacity: 0.38 !important;
-      filter: grayscale(85%);
+      opacity: 0.5 !important;
+      filter: grayscale(70%);
       background: rgba(255, 255, 255, 0.008) !important;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -152,55 +171,72 @@
 
   <!-- Header Bar -->
   <header class="border-b border-white/[0.07] bg-[#060709]/80 backdrop-blur-2xl sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      
-      <!-- Brand & Live Radar Badge -->
-      <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-950/40 border border-emerald-500/25 text-emerald-400 text-xs font-mono tracking-wider shadow-[0_0_15px_-3px_rgba(16,185,129,0.3)]">
-          <span class="relative flex h-2 w-2">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+
+      <!-- Brand & Live Badge -->
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-emerald-400 p-[1px] shadow-[0_0_18px_-4px_rgba(99,102,241,0.7)] flex-shrink-0">
+          <div class="w-full h-full rounded-[11px] bg-[#0A0D16] flex items-center justify-center text-indigo-200">
+            <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="min-w-0 leading-tight">
+          <div class="text-sm font-bold text-white tracking-tight truncate">GSG Zeitenrechnung</div>
+          <div class="text-[11px] text-zinc-500 truncate">Melonly-Schichten → Discord-Auszahlung</div>
+        </div>
+        <div class="hidden sm:flex items-center gap-2 ml-2 px-2.5 py-1 rounded-full bg-emerald-950/40 border border-emerald-500/25 text-emerald-400 text-[10px] font-mono tracking-wider">
+          <span class="relative flex h-1.5 w-1.5">
             <span class="radar-pulse absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
           </span>
           <span class="font-semibold">LIVE · PARSER AKTIV</span>
-        </div>
-        <span class="hidden md:inline-block text-zinc-700">/</span>
-        <div class="hidden md:flex items-center gap-2.5 text-xs text-zinc-400 font-mono">
-          <span class="text-zinc-200 font-bold tracking-tight">STARRED-BOT PAYROLL ENGINE</span>
-          <span class="px-2 py-0.5 rounded bg-white/[0.04] border border-white/10 text-[11px] text-indigo-300">v3.1 PRO</span>
         </div>
       </div>
 
       <!-- Settings Action -->
-      <div class="flex items-center gap-3">
-        <button id="toggleSettingsBtn" class="flex items-center gap-2 px-3.5 py-1.5 text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 rounded-xl transition-all duration-200 hover:border-indigo-500/30">
-          <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-          </svg>
-          <span>⚙ Stundensätze konfigurieren</span>
-        </button>
-      </div>
+      <button id="toggleSettingsBtn" class="flex items-center gap-2 px-3.5 py-2 text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.03] hover:bg-white/[0.07] border border-white/10 rounded-xl transition-all duration-200 hover:border-indigo-500/30 flex-shrink-0">
+        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        <span class="hidden sm:inline">Einstellungen</span>
+      </button>
 
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-7">
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-6">
 
     <!-- Hero Section -->
-    <div class="relative overflow-hidden rounded-2xl glass-card p-6 sm:p-9 border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent">
-      <div class="max-w-3xl space-y-2.5">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-          </svg>
-          Automatisierte Auszahlungs-Pipeline
+    <div class="relative overflow-hidden rounded-2xl glass-card p-6 sm:p-8 border border-white/10 bg-gradient-to-br from-indigo-500/[0.07] via-white/[0.02] to-emerald-500/[0.05]">
+      <div class="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+      <div class="relative flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+        <div class="max-w-xl space-y-2">
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+            Jede Schicht erfassen, <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-emerald-300">sekundengenau bezahlt.</span>
+          </h1>
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            Melonly-Liste einfügen, Discord-Namen werden automatisch zugeordnet, Befehle für den Bot mit einem Klick kopieren.
+          </p>
         </div>
-        <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-          Jede Schicht erfassen, <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-300">sekundengenau bezahlt.</span>
-        </h1>
-        <p class="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl">
-          Melonly-Department-Auswertung mit automatischem Discord-Tag-Mapping, 1-Klick Starred-Bot Command-Generierung und intelligenter 0 € Nullbetrags-Filterung.
-        </p>
+
+        <!-- Ablauf in 3 Schritten -->
+        <ol class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs lg:min-w-[520px]">
+          <li class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+            <span class="step-badge">1</span>
+            <span class="text-zinc-300 leading-snug">Melonly-Liste einfügen</span>
+          </li>
+          <li class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+            <span class="step-badge">2</span>
+            <span class="text-zinc-300 leading-snug">Discord-Namen prüfen</span>
+          </li>
+          <li class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07]">
+            <span class="step-badge">3</span>
+            <span class="text-zinc-300 leading-snug">Befehl kopieren &amp; abhaken</span>
+          </li>
+        </ol>
       </div>
     </div>
 
@@ -228,7 +264,7 @@
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
               </svg>
-              Discord-Mapping leeren
+              Lokale Discord-Daten leeren
             </button>
             <button id="closeSettingsBtn" class="p-1.5 text-zinc-400 hover:text-white rounded-lg hover:bg-white/[0.05]">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -250,6 +286,56 @@
           </span>
           <span class="text-zinc-500 font-mono text-[11px]">Auto-Save aktiv</span>
         </div>
+
+        <!-- GitHub-Sync: globale Discord-Namen -->
+        <div id="githubSyncSettings" class="pt-4 border-t border-white/[0.08] space-y-3">
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <span class="text-indigo-400 text-lg">☁</span>
+              <h2 class="text-base font-semibold text-white">Globale Discord-Namen (GitHub)</h2>
+            </div>
+            <p class="text-xs text-zinc-400 max-w-3xl">
+              Eingetragene Discord-Namen werden in <code class="text-indigo-300 font-mono text-[11px]">discord-mapping.json</code> im GitHub-Repo gespeichert und sind für alle sichtbar, die die Seite öffnen.
+              Zum <span class="text-zinc-200">Speichern</span> braucht dieser Browser einen GitHub-Token mit Schreibrecht. Ohne Token werden die Namen nur geladen, eigene Änderungen bleiben lokal.
+            </p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+            <input id="githubTokenInput" type="password" autocomplete="off" spellcheck="false"
+              placeholder="github_pat_…"
+              class="w-full sm:max-w-md bg-[#07090F] text-zinc-200 font-mono text-xs px-3 py-2 rounded-xl border border-white/10 focus:border-indigo-500 outline-none">
+            <div class="flex items-center gap-2">
+              <button id="saveTokenBtn" class="px-3.5 py-2 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition-colors">Token speichern</button>
+              <button id="removeTokenBtn" class="px-3.5 py-2 text-xs font-medium text-zinc-300 hover:text-white bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 rounded-xl transition-colors">Token entfernen</button>
+            </div>
+            <span id="tokenStatus" class="text-xs font-mono text-zinc-500">Kein Token hinterlegt</span>
+          </div>
+
+          <details class="text-xs text-zinc-400">
+            <summary class="cursor-pointer text-zinc-300 hover:text-white select-none">So erstellst du den Token</summary>
+            <ol class="list-decimal list-inside space-y-1 mt-2 pl-1">
+              <li>Auf GitHub: Profilbild → <span class="text-zinc-200">Settings</span> → <span class="text-zinc-200">Developer settings</span> → <span class="text-zinc-200">Personal access tokens</span> → <span class="text-zinc-200">Fine-grained tokens</span> → <span class="text-zinc-200">Generate new token</span>.</li>
+              <li>Bei <span class="text-zinc-200">Repository access</span> „Only select repositories“ wählen und nur <code class="text-indigo-300 font-mono">GSG-Zeitenrechnung</code> auswählen.</li>
+              <li>Bei <span class="text-zinc-200">Permissions</span> → <span class="text-zinc-200">Contents</span> und <span class="text-zinc-200">Actions</span> jeweils auf „Read and write“ stellen (Actions braucht der Button „Aus Discord holen“).</li>
+              <li>Token erzeugen, kopieren und oben einfügen.</li>
+            </ol>
+            <p class="mt-2 text-amber-300/90">Der Token wird nur in diesem Browser gespeichert. Niemals in den Code, ins Repo oder in Discord posten – wer ihn hat, kann das Repo ändern.</p>
+          </details>
+
+          <details id="discordBotSetup" class="text-xs text-zinc-400">
+            <summary class="cursor-pointer text-zinc-300 hover:text-white select-none">Discord-Bot einrichten (Usernames automatisch holen)</summary>
+            <p class="mt-2">Beim Kopieren aus Discord kommen nur Nicknames mit. Ein eigener Bot liest deshalb die Mitgliederliste und ordnet jedem Nickname mit Dienstnummer (z. B. <code class="text-indigo-300 font-mono">[GUF-68] Sarah Salzberg</code>) den Discord-Username zu. Einmalig einrichten:</p>
+            <ol class="list-decimal list-inside space-y-1 mt-2 pl-1">
+              <li>Auf <span class="text-zinc-200">discord.com/developers/applications</span> → <span class="text-zinc-200">New Application</span> (Name z. B. „GSG Abgleich“).</li>
+              <li>Links <span class="text-zinc-200">Bot</span> → <span class="text-zinc-200">Reset Token</span> → Token kopieren. Weiter unten <span class="text-zinc-200">Server Members Intent</span> einschalten und speichern.</li>
+              <li>Links <span class="text-zinc-200">OAuth2</span> → <span class="text-zinc-200">URL Generator</span> → Scope <span class="text-zinc-200">bot</span> anhaken (keine Rechte nötig) → Link öffnen → euren Server auswählen.</li>
+              <li>In Discord: Einstellungen → Erweitert → <span class="text-zinc-200">Entwicklermodus</span> an. Dann Rechtsklick auf euren Server → <span class="text-zinc-200">Server-ID kopieren</span>.</li>
+              <li>Auf GitHub im Repo: <span class="text-zinc-200">Settings</span> → <span class="text-zinc-200">Secrets and variables</span> → <span class="text-zinc-200">Actions</span> → <span class="text-zinc-200">New repository secret</span>: <code class="text-indigo-300 font-mono">DISCORD_BOT_TOKEN</code> (Bot-Token) und <code class="text-indigo-300 font-mono">DISCORD_GUILD_ID</code> (Server-ID).</li>
+              <li>Fertig: Der Abgleich läuft alle 6 Stunden von selbst. Sofort geht es über <span class="text-zinc-200">Aus Discord holen</span> oder auf GitHub unter <span class="text-zinc-200">Actions</span> → „Discord-Mitglieder aktualisieren“ → <span class="text-zinc-200">Run workflow</span>.</li>
+            </ol>
+            <p class="mt-2 text-amber-300/90">Den Bot-Token nur als GitHub-Secret speichern – nie hier eintragen, ins Repo schreiben oder in Discord posten.</p>
+          </details>
+        </div>
       </div>
     </div>
 
@@ -266,7 +352,7 @@
             </svg>
           </div>
         </div>
-        <div id="kpiTotalPayout" class="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">0 €</div>
+        <div id="kpiTotalPayout" class="text-xl sm:text-2xl xl:text-3xl whitespace-nowrap font-extrabold font-mono text-white tracking-tight">0 €</div>
         <div class="mt-2 flex items-center justify-between text-[11px] text-zinc-400">
           <span>Centfrei gerundet</span>
           <span id="kpiAvgPerHour" class="font-mono text-zinc-400">Ø 0 €/h</span>
@@ -284,7 +370,7 @@
             </svg>
           </div>
         </div>
-        <div id="kpiTotalTime" class="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">0 Std. 00 Min.</div>
+        <div id="kpiTotalTime" class="text-xl sm:text-2xl xl:text-3xl whitespace-nowrap font-extrabold font-mono text-white tracking-tight">0 Std. 00 Min.</div>
         <div class="mt-2 flex items-center justify-between text-[11px] text-zinc-400">
           <span>Schichtdauer akkumuliert</span>
           <span id="kpiTotalSeconds" class="font-mono text-zinc-400">0s Rest</span>
@@ -302,7 +388,7 @@
             </svg>
           </div>
         </div>
-        <div id="kpiMemberCount" class="text-2xl sm:text-3xl font-extrabold font-mono text-white tracking-tight">0 Personen</div>
+        <div id="kpiMemberCount" class="text-xl sm:text-2xl xl:text-3xl whitespace-nowrap font-extrabold font-mono text-white tracking-tight">0 Personen</div>
         <div class="mt-2 flex items-center justify-between text-[11px] text-zinc-400">
           <span id="kpiMappedCount" class="text-indigo-300 font-mono">0 gemappt</span>
           <span id="kpiActiveListCount" class="font-mono text-emerald-400">0 in Liste</span>
@@ -335,29 +421,27 @@
 
     </div>
 
-    <!-- Input Zone -->
-    <div class="glass-card rounded-2xl p-6 sm:p-7 border border-white/10 space-y-5">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <div class="space-y-1">
-          <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-            <span>Melonly Rohdaten-Eingabe</span>
-            <span class="text-xs font-mono font-normal text-zinc-400 px-2 py-0.5 rounded bg-white/[0.04] border border-white/5">Discord Export</span>
-          </h2>
-          <p class="text-xs text-zinc-400">
-            Füge unformatierte Discord-Texte ein. Pings (<code class="text-zinc-300 font-mono">@</code>), Emojis (<code class="text-zinc-300">💤</code>) und Leerzeichen werden automatisch eliminiert.
-          </p>
+    <!-- Schritt 1: Melonly-Liste einfügen -->
+    <div class="glass-card rounded-2xl p-5 sm:p-7 border border-white/10 space-y-5">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div class="flex items-start gap-3">
+          <span class="step-badge mt-0.5">1</span>
+          <div class="space-y-1">
+            <h2 class="text-base sm:text-lg font-bold text-white">Melonly-Liste einfügen</h2>
+            <p class="text-xs text-zinc-400">
+              Text aus Discord einfach komplett einfügen – Pings (<code class="text-zinc-300 font-mono">@</code>), Emojis (<code class="text-zinc-300">💤</code>) und Leerzeichen werden automatisch entfernt.
+            </p>
+          </div>
         </div>
 
-        <div class="flex items-center gap-2">
-          <span id="rawLineCount" class="text-xs font-mono text-zinc-400 px-2.5 py-1 bg-white/[0.04] border border-white/5 rounded-lg">
-            0 Zeilen
-          </span>
-        </div>
+        <span id="rawLineCount" class="text-xs font-mono text-zinc-400 px-2.5 py-1 bg-white/[0.04] border border-white/5 rounded-lg">
+          0 Zeilen
+        </span>
       </div>
 
       <!-- Textarea -->
       <div class="relative">
-        <textarea id="rawInput" rows="6" 
+        <textarea id="rawInput" rows="6"
           placeholder="Füge hier die Melonly-Rohdaten ein...
 
 Beispiel:
@@ -372,7 +456,7 @@ Beispiel:
       <div class="flex flex-wrap items-center justify-between gap-3 pt-1">
         <div class="flex flex-wrap items-center gap-3">
           <!-- Primary Action -->
-          <button id="calculateBtn" class="flex items-center gap-2.5 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl shadow-[0_0_20px_-3px_rgba(99,102,241,0.4)] transition-all duration-200 active:scale-[0.98]">
+          <button id="calculateBtn" class="flex items-center gap-2.5 px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white text-sm font-semibold rounded-xl shadow-[0_0_24px_-4px_rgba(99,102,241,0.6)] transition-all duration-200 active:scale-[0.98]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
             </svg>
@@ -398,47 +482,102 @@ Beispiel:
       </div>
     </div>
 
-    <!-- Starred-Bot Payout & Command Processing Console -->
-    <div class="space-y-4">
-      
-      <!-- Console Toolbar with CORE FEATURE: 0 € Filter Toggle -->
-      <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 glass-card rounded-2xl p-4 sm:px-6 border border-white/10">
-        
-        <!-- Left: Title & Workflow Info -->
-        <div class="flex items-center gap-3">
-          <div class="w-2.5 h-2.5 rounded-full bg-indigo-500"></div>
-          <div>
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span>Abarbeitungs- & Command-Konsole</span>
-              <span class="text-xs font-mono font-normal text-indigo-400 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">/economy add</span>
-            </h2>
-            <p class="text-xs text-zinc-400">Automatische Command-Generierung mit persistentem Discord-Tag-Speicher</p>
+    <!-- Schritt 2: Discord-Namen (für alle gespeichert + automatisch aus Discord) -->
+    <div id="syncBar" class="glass-card rounded-2xl border border-white/10 overflow-hidden text-xs">
+      <div class="flex items-center justify-between gap-3 px-5 sm:px-7 py-4 border-b border-white/[0.06]">
+        <div class="flex items-start gap-3">
+          <span class="step-badge mt-0.5">2</span>
+          <div class="space-y-1">
+            <h2 class="text-base sm:text-lg font-bold text-white">Discord-Namen</h2>
+            <p class="text-xs text-zinc-400">Werden automatisch eingetragen und für alle gespeichert – fehlende einfach in der Liste unten ergänzen.</p>
+          </div>
+        </div>
+        <button id="syncReloadBtn" title="Discord-Namen neu von GitHub laden" class="flex items-center gap-1.5 px-2.5 py-1.5 font-medium text-zinc-400 hover:text-white hover:bg-white/[0.06] rounded-lg transition-colors flex-shrink-0">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span class="hidden sm:inline">Neu laden</span>
+        </button>
+      </div>
+
+      <div class="divide-y divide-white/[0.05]">
+        <!-- Automatisch aus Discord (Bot) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-7 py-3">
+          <div class="flex items-start gap-3 min-w-0">
+            <span id="membersDot" class="mt-1.5 w-2 h-2 rounded-full bg-zinc-600 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <div class="font-semibold text-zinc-200">Automatisch aus Discord</div>
+              <div id="membersStatusText" class="text-zinc-400 mt-0.5">Wird geladen…</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button id="membersUpdateBtn" class="hidden flex items-center gap-1.5 px-3 py-1.5 font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-wait rounded-lg shadow-[0_0_14px_-3px_rgba(99,102,241,0.6)] transition-all active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              <span>Aus Discord holen</span>
+            </button>
+            <button id="membersSetupBtn" class="hidden px-3 py-1.5 font-medium text-indigo-300 hover:text-indigo-100 bg-indigo-600/15 hover:bg-indigo-600/25 border border-indigo-500/30 rounded-lg transition-colors">Bot einrichten</button>
           </div>
         </div>
 
-        <!-- Right: 0 € Toggle, Filter Tabs, Search & Bulk Actions -->
-        <div class="flex flex-wrap items-center gap-3">
-          
-          <!-- CORE FEATURE: Transparenz-Badge & 0 € Toggle -->
-          <label class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 text-xs font-mono transition-all">
-            <input type="checkbox" id="showZeroPayoutsToggle" class="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-indigo-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
-            <span class="text-zinc-300 font-medium">Nullbeträge anzeigen</span>
-            <span id="zeroPayoutCountBadge" class="hidden text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
-              0 Personen ausgeblendet
-            </span>
-          </label>
+        <!-- Für alle gespeichert (GitHub) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 sm:px-7 py-3">
+          <div class="flex items-start gap-3 min-w-0">
+            <span id="syncDot" class="mt-1.5 w-2 h-2 rounded-full bg-zinc-600 flex-shrink-0"></span>
+            <div class="min-w-0">
+              <div class="font-semibold text-zinc-200">Von Hand eingetragen</div>
+              <div id="syncStatusText" class="text-zinc-400 mt-0.5">Wird geladen…</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button id="syncNowBtn" class="hidden px-3 py-1.5 font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg transition-colors">Jetzt speichern</button>
+            <button id="syncSetupBtn" class="hidden px-3 py-1.5 font-medium text-indigo-300 hover:text-indigo-100 bg-indigo-600/15 hover:bg-indigo-600/25 border border-indigo-500/30 rounded-lg transition-colors">GitHub-Zugang einrichten</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-          <!-- Search Input -->
-          <div class="relative min-w-[170px]">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-            </span>
-            <input id="searchInput" type="text" placeholder="Suche Name, ID..." 
-              class="w-full bg-[#07090F] text-zinc-200 text-xs pl-8 pr-3 py-2 rounded-xl border border-white/10 focus:border-indigo-500 outline-none">
+    <!-- Schritt 3: Auszahlen (Starred-Bot Command-Konsole) -->
+    <div class="space-y-4">
+
+      <!-- Console Toolbar with CORE FEATURE: 0 € Filter Toggle -->
+      <div class="glass-card rounded-2xl border border-white/10">
+
+        <!-- Titel & Sammel-Aktionen -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 sm:px-7 py-4">
+          <div class="flex items-start gap-3">
+            <span class="step-badge mt-0.5">3</span>
+            <div class="space-y-1">
+              <h2 class="text-base sm:text-lg font-bold text-white flex flex-wrap items-center gap-2">
+                <span>Auszahlen</span>
+                <span class="text-[11px] font-mono font-normal text-indigo-300 px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">/economy add</span>
+              </h2>
+              <p class="text-xs text-zinc-400">Befehl kopieren, in Discord einfügen, Person abhaken.</p>
+            </div>
           </div>
 
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Bulk Action 1: Copy All Commands -->
+            <button id="copyAllCommandsBtn" class="flex items-center gap-2 px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-200 hover:text-white text-xs font-semibold rounded-xl border border-indigo-500/30 transition-all active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+              </svg>
+              <span>Alle fertigen Commands</span>
+            </button>
+
+            <!-- Bulk Action 2: Copy Summary Text -->
+            <button id="copyAllTextBtn" class="flex items-center gap-2 px-3.5 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 hover:text-white text-xs font-semibold rounded-xl border border-white/10 transition-all active:scale-95">
+              <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              <span>Auszahlungsliste</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter, Suche & 0 €-Umschalter -->
+        <div class="flex flex-wrap items-center gap-3 px-5 sm:px-7 py-3 border-t border-white/[0.06] bg-white/[0.015] rounded-b-2xl">
           <!-- Filter State Tabs -->
           <div class="flex items-center bg-white/[0.03] p-1 rounded-xl border border-white/10 text-xs">
             <button data-filter="all" class="filter-tab px-3 py-1.5 rounded-lg text-white font-medium bg-indigo-600 transition-all">Alle (<span id="countFilterAll">0</span>)</button>
@@ -446,22 +585,25 @@ Beispiel:
             <button data-filter="paid" class="filter-tab px-3 py-1.5 rounded-lg text-zinc-400 hover:text-white transition-all">Erledigt (<span id="countFilterPaid">0</span>)</button>
           </div>
 
-          <!-- Bulk Action 1: Copy All Commands -->
-          <button id="copyAllCommandsBtn" class="flex items-center gap-2 px-3.5 py-2 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 hover:text-indigo-100 text-xs font-semibold rounded-xl border border-indigo-500/30 transition-all active:scale-95">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-            </svg>
-            <span>Alle fertigen Commands</span>
-          </button>
+          <!-- Search Input -->
+          <div class="relative flex-1 min-w-[170px] max-w-xs">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+            </span>
+            <input id="searchInput" type="text" placeholder="Suche Name, Dienstnummer, Discord…"
+              class="w-full bg-[#07090F] text-zinc-200 text-xs pl-8 pr-3 py-2 rounded-xl border border-white/10 focus:border-indigo-500 outline-none">
+          </div>
 
-          <!-- Bulk Action 2: Copy Summary Text -->
-          <button id="copyAllTextBtn" class="flex items-center gap-2 px-3.5 py-2 bg-white/[0.04] hover:bg-white/[0.08] text-zinc-300 hover:text-white text-xs font-semibold rounded-xl border border-white/10 transition-all active:scale-95">
-            <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            <span>Auszahlungsliste</span>
-          </button>
-
+          <!-- CORE FEATURE: Transparenz-Badge & 0 € Toggle -->
+          <label class="flex items-center gap-2.5 cursor-pointer select-none px-3.5 py-2 rounded-xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/10 text-xs transition-all sm:ml-auto">
+            <input type="checkbox" id="showZeroPayoutsToggle" class="w-4 h-4 rounded border-zinc-700 bg-zinc-900 text-indigo-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+            <span class="text-zinc-300 font-medium">Nullbeträge anzeigen</span>
+            <span id="zeroPayoutCountBadge" class="hidden text-[11px] font-bold px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30">
+              0 Personen ausgeblendet
+            </span>
+          </label>
         </div>
       </div>
 
@@ -536,11 +678,36 @@ Beispiel:
 
     // Global State
     let currentRates = { ...DEFAULT_RATES };
-    let discordMapping = {}; // key: callsign (z. B. "GUF-68"), value: discord username (z. B. "justus1932")
+    let discordMapping = {}; // Aktive Zuordnung: key = Name (z. B. "Sarah Salzberg"), value = Discord-Username (z. B. "justus1932")
+    let globalMapping = {};  // Stand aus discord-mapping.json auf GitHub
+    let pendingChanges = {}; // Lokale, noch nicht hochgeladene Änderungen: Name -> Username (null = löschen)
+    let legacyMapping = {};  // Altes Format (key = Dienstnummer), wird beim Berechnen auf Namen übertragen
+    let discordMembers = {}; // Automatisch aus Discord (discord-members.json, per GitHub Action): Name -> Username
     let parsedRecords = [];
     let currentFilter = 'all';
     let searchQuery = '';
     let showZeroPayouts = false; // Standardmäßig ausgeblendet
+
+    // GitHub-Sync: Repo, in dem die Seite liegt
+    const GITHUB_SYNC = {
+      owner: 'benjamingermanrp-art',
+      repo: 'GSG-Zeitenrechnung',
+      branch: 'main',
+      path: 'discord-mapping.json',
+      membersPath: 'discord-members.json',
+      membersWorkflow: 'discord-members.yml'
+    };
+    const STORAGE_KEYS = {
+      globalCache: 'melonly_discord_global_v4',
+      pending: 'melonly_discord_pending_v4',
+      legacy: 'melonly_discord_mapping_v3',
+      membersCache: 'melonly_discord_members_v1',
+      token: 'melonly_github_token'
+    };
+    let syncStatus = { state: 'loading', message: '' }; // loading | saving | error | idle
+    let membersStatus = { state: 'loading', message: '' }; // loading | running | error | idle
+    let syncTimer = null;
+    let syncInFlight = false;
 
     // ==========================================
     // 2. PERSISTENCE LAYER (LOCALSTORAGE)
@@ -563,13 +730,19 @@ Beispiel:
         }
       }
 
-      const savedMapping = localStorage.getItem('melonly_discord_mapping_v3');
-      if (savedMapping) {
-        try {
-          discordMapping = JSON.parse(savedMapping) || {};
-        } catch (e) {
-          console.error("Fehler beim Laden des Discord-Mappings:", e);
-        }
+      globalMapping = sanitizeMapping(readJsonStorage(STORAGE_KEYS.globalCache));
+      pendingChanges = sanitizeMapping(readJsonStorage(STORAGE_KEYS.pending), true);
+      legacyMapping = sanitizeMapping(readJsonStorage(STORAGE_KEYS.legacy));
+      discordMembers = sanitizeMapping(readJsonStorage(STORAGE_KEYS.membersCache));
+      rebuildDiscordMapping();
+    }
+
+    function readJsonStorage(key) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || '{}');
+      } catch (e) {
+        console.error(`Fehler beim Laden von ${key}:`, e);
+        return {};
       }
     }
 
@@ -578,7 +751,440 @@ Beispiel:
     }
 
     function saveDiscordMappingToStorage() {
-      localStorage.setItem('melonly_discord_mapping_v3', JSON.stringify(discordMapping));
+      localStorage.setItem(STORAGE_KEYS.globalCache, JSON.stringify(globalMapping));
+      localStorage.setItem(STORAGE_KEYS.pending, JSON.stringify(pendingChanges));
+      localStorage.setItem(STORAGE_KEYS.legacy, JSON.stringify(legacyMapping));
+    }
+
+    // ==========================================
+    // 2b. GLOBALE DISCORD-NAMEN (GITHUB-SYNC)
+    // ==========================================
+    function mappingKey(name) {
+      return String(name || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function sanitizeMapping(obj, allowNull = false) {
+      const result = {};
+      if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return result;
+      for (const [key, val] of Object.entries(obj)) {
+        if (typeof val === 'string' && val.trim()) result[key] = val.trim();
+        else if (allowNull && val === null) result[key] = null;
+      }
+      return result;
+    }
+
+    function applyChanges(base, changes) {
+      const result = { ...base };
+      for (const [key, val] of Object.entries(changes)) {
+        if (val) result[key] = val;
+        else delete result[key];
+      }
+      return result;
+    }
+
+    function rebuildDiscordMapping() {
+      discordMapping = applyChanges(globalMapping, pendingChanges);
+    }
+
+    // Von Hand eingetragene Namen haben Vorrang vor den automatisch aus Discord geladenen
+    function lookupDiscordUser(name) {
+      const key = mappingKey(name);
+      return discordMapping[key] || discordMembers[key] || '';
+    }
+
+    function setDiscordName(name, value) {
+      const key = mappingKey(name);
+      if (!key) return;
+      const clean = String(value || '').replace(/^@+/, '').trim();
+      if (clean === (globalMapping[key] || '')) {
+        delete pendingChanges[key];
+      } else {
+        pendingChanges[key] = clean || null;
+      }
+      rebuildDiscordMapping();
+      saveDiscordMappingToStorage();
+      updateSyncUI();
+      scheduleSync();
+    }
+
+    function serializeMapping(mapping) {
+      const sorted = {};
+      Object.keys(mapping).sort((a, b) => a.localeCompare(b, 'de')).forEach(k => { sorted[k] = mapping[k]; });
+      return JSON.stringify(sorted, null, 2) + '\n';
+    }
+
+    function utf8ToBase64(str) {
+      let bin = '';
+      new TextEncoder().encode(str).forEach(b => { bin += String.fromCharCode(b); });
+      return btoa(bin);
+    }
+
+    function base64ToUtf8(b64) {
+      const bin = atob(String(b64 || '').replace(/\s/g, ''));
+      return new TextDecoder().decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+    }
+
+    function getGithubToken() {
+      return (localStorage.getItem(STORAGE_KEYS.token) || '').trim();
+    }
+
+    function githubRepoUrl(suffix) {
+      return `https://api.github.com/repos/${GITHUB_SYNC.owner}/${GITHUB_SYNC.repo}/${suffix}`;
+    }
+
+    function githubContentsUrl(filePath = GITHUB_SYNC.path) {
+      return githubRepoUrl(`contents/${filePath}`);
+    }
+
+    function githubHeaders(token) {
+      const headers = { 'Accept': 'application/vnd.github+json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      return headers;
+    }
+
+    function describeGithubError(status, token) {
+      if (status === 401) return 'GitHub-Token ungültig oder abgelaufen';
+      if (status === 403) return token
+        ? 'Token hat kein Schreibrecht (Contents: Read and write) oder GitHub-Limit erreicht'
+        : 'GitHub-Limit erreicht, bitte später neu laden';
+      if (status === 404) return `Token hat keinen Zugriff auf ${GITHUB_SYNC.repo}`;
+      return `GitHub-Fehler (${status})`;
+    }
+
+    async function fetchRepoJson(filePath, token) {
+      const res = await fetch(`${githubContentsUrl(filePath)}?ref=${GITHUB_SYNC.branch}`, {
+        headers: githubHeaders(token),
+        cache: 'no-store'
+      });
+      if (res.status === 404) return { mapping: {}, sha: null }; // Datei existiert noch nicht
+      if (!res.ok) throw new Error(describeGithubError(res.status, token));
+      const data = await res.json();
+      const text = base64ToUtf8(data.content).trim();
+      return { mapping: sanitizeMapping(JSON.parse(text || '{}')), sha: data.sha };
+    }
+
+    // Fallback ohne API-Limit: die von GitHub Pages ausgelieferte Datei (kann ~1 Min. hinterherhängen)
+    async function fetchPagesJson(filePath) {
+      const res = await fetch(`${filePath}?t=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`${filePath} nicht erreichbar (${res.status})`);
+      return { mapping: sanitizeMapping(await res.json()), sha: null };
+    }
+
+    async function fetchRepoJsonWithFallback(filePath) {
+      try {
+        return await fetchRepoJson(filePath, getGithubToken());
+      } catch (apiErr) {
+        console.warn(`${filePath} über die GitHub-API nicht ladbar, versuche GitHub Pages:`, apiErr);
+        return await fetchPagesJson(filePath);
+      }
+    }
+
+    async function loadGlobalMapping() {
+      setSyncStatus('loading');
+      let result;
+      try {
+        result = await fetchRepoJsonWithFallback(GITHUB_SYNC.path);
+      } catch (err) {
+        console.error('Globale Discord-Namen nicht ladbar:', err);
+        setSyncStatus('error', 'GitHub nicht erreichbar – zeige zuletzt geladenen Stand');
+        return;
+      }
+
+      globalMapping = result.mapping;
+      // Änderungen, die global schon so drinstehen, sind erledigt
+      for (const [key, val] of Object.entries(pendingChanges)) {
+        if ((globalMapping[key] || null) === val) delete pendingChanges[key];
+      }
+      rebuildDiscordMapping();
+      saveDiscordMappingToStorage();
+      refreshRecordsFromMapping();
+      setSyncStatus('idle');
+      scheduleSync(500);
+    }
+
+    function scheduleSync(delay = 3000) {
+      clearTimeout(syncTimer);
+      if (!getGithubToken() || Object.keys(pendingChanges).length === 0) return;
+      syncTimer = setTimeout(pushPendingToGithub, delay);
+    }
+
+    async function pushPendingToGithub() {
+      const token = getGithubToken();
+      if (!token || syncInFlight || Object.keys(pendingChanges).length === 0) return;
+      syncInFlight = true;
+      setSyncStatus('saving');
+      const snapshot = { ...pendingChanges };
+
+      try {
+        for (let attempt = 0; attempt < 3; attempt++) {
+          // Immer frisch laden, damit gleichzeitige Änderungen anderer nicht überschrieben werden
+          const remote = await fetchRepoJson(GITHUB_SYNC.path, token);
+          const merged = applyChanges(remote.mapping, snapshot);
+
+          if (serializeMapping(merged) !== serializeMapping(remote.mapping)) {
+            const count = Object.keys(snapshot).length;
+            const body = {
+              message: `Discord-Namen aktualisiert (${count} ${count === 1 ? 'Änderung' : 'Änderungen'})`,
+              content: utf8ToBase64(serializeMapping(merged)),
+              branch: GITHUB_SYNC.branch
+            };
+            if (remote.sha) body.sha = remote.sha;
+
+            const res = await fetch(githubContentsUrl(), {
+              method: 'PUT',
+              headers: { ...githubHeaders(token), 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
+            });
+            // 409/422: Datei wurde zwischendurch geändert -> neu laden und nochmal
+            if (res.status === 409 || res.status === 422) continue;
+            if (!res.ok) throw new Error(describeGithubError(res.status, token));
+          }
+
+          globalMapping = merged;
+          for (const [key, val] of Object.entries(snapshot)) {
+            if (pendingChanges[key] === val) delete pendingChanges[key];
+          }
+          rebuildDiscordMapping();
+          saveDiscordMappingToStorage();
+          refreshRecordsFromMapping();
+          setSyncStatus('idle');
+          return;
+        }
+        throw new Error('Speichern kollidiert wiederholt mit anderen Änderungen');
+      } catch (e) {
+        console.error('GitHub-Sync fehlgeschlagen:', e);
+        setSyncStatus('error', e.message || 'Speichern fehlgeschlagen');
+      } finally {
+        syncInFlight = false;
+        // Änderungen, die während des Speicherns dazukamen
+        if (syncStatus.state !== 'error') scheduleSync();
+      }
+    }
+
+    // ==========================================
+    // 2c. AUTOMATISCH AUS DISCORD (BOT + GITHUB ACTION)
+    // ==========================================
+    const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+    function setMembersStatus(state, message = '') {
+      membersStatus = { state, message };
+      updateSyncUI();
+    }
+
+    async function loadDiscordMembers() {
+      try {
+        discordMembers = (await fetchRepoJsonWithFallback(GITHUB_SYNC.membersPath)).mapping;
+        localStorage.setItem(STORAGE_KEYS.membersCache, JSON.stringify(discordMembers));
+        if (membersStatus.state !== 'running') membersStatus = { state: 'idle', message: '' };
+      } catch (err) {
+        console.error('Discord-Mitglieder nicht ladbar:', err);
+        if (membersStatus.state !== 'running') membersStatus = { state: 'error', message: 'Discord-Mitglieder nicht ladbar' };
+      }
+      refreshRecordsFromMapping();
+      updateSyncUI();
+    }
+
+    async function fetchLatestMembersRun(token) {
+      const res = await fetch(githubRepoUrl(`actions/workflows/${GITHUB_SYNC.membersWorkflow}/runs?per_page=1`), {
+        headers: githubHeaders(token),
+        cache: 'no-store'
+      });
+      if (!res.ok) return null;
+      const { workflow_runs = [] } = await res.json();
+      return workflow_runs[0] || null;
+    }
+
+    // Startet die GitHub Action, die per Discord-Bot alle Mitglieder abgleicht, und wartet auf das Ergebnis
+    async function triggerMembersUpdate() {
+      const token = getGithubToken();
+      if (!token || membersStatus.state === 'running') return;
+      setMembersStatus('running');
+      const filledBefore = parsedRecords.filter(r => r.discordUser).length;
+
+      try {
+        const previousRun = await fetchLatestMembersRun(token);
+        const res = await fetch(githubRepoUrl(`actions/workflows/${GITHUB_SYNC.membersWorkflow}/dispatches`), {
+          method: 'POST',
+          headers: { ...githubHeaders(token), 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ref: GITHUB_SYNC.branch })
+        });
+        if (res.status === 403 || res.status === 404) {
+          throw new Error('Token braucht zusätzlich das Recht „Actions: Read and write“');
+        }
+        if (!res.ok) throw new Error(describeGithubError(res.status, token));
+
+        // Der Abgleich dauert meist 20–60 Sekunden
+        for (let i = 0; i < 40; i++) {
+          await sleep(5000);
+          const run = await fetchLatestMembersRun(token);
+          if (!run || (previousRun && run.id === previousRun.id) || run.status !== 'completed') continue;
+          if (run.conclusion !== 'success') {
+            throw new Error('Discord-Abgleich fehlgeschlagen – Details auf GitHub unter „Actions“');
+          }
+          membersStatus = { state: 'idle', message: '' };
+          await loadDiscordMembers();
+          const newlyFilled = parsedRecords.filter(r => r.discordUser).length - filledBefore;
+          showToast(newlyFilled > 0
+            ? `Discord-Abgleich fertig: ${newlyFilled} Discord-Namen automatisch eingetragen.`
+            : 'Discord-Abgleich fertig: keine neuen Namen gefunden.', 'success');
+          return;
+        }
+        throw new Error('Discord-Abgleich dauert ungewöhnlich lange – später „Neu laden“ klicken');
+      } catch (err) {
+        console.error('Discord-Abgleich fehlgeschlagen:', err);
+        setMembersStatus('error', err.message);
+        showToast(err.message, 'warn');
+      }
+    }
+
+    function refreshRecordsFromMapping() {
+      let changed = false;
+      for (const rec of parsedRecords) {
+        const val = lookupDiscordUser(rec.name);
+        if (val !== rec.discordUser) {
+          rec.discordUser = val;
+          changed = true;
+        }
+      }
+      if (!changed) return;
+      // Nicht neu zeichnen, während jemand in ein Discord-Feld tippt
+      const active = document.activeElement;
+      if (active && active.classList.contains('discord-input')) {
+        updateKPIs();
+      } else {
+        renderAll();
+      }
+    }
+
+    function setSyncStatus(state, message = '') {
+      syncStatus = { state, message };
+      updateSyncUI();
+    }
+
+    const STATUS_TONES = {
+      ok: 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]',
+      warn: 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]',
+      error: 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]',
+      busy: 'bg-indigo-400 animate-pulse',
+      off: 'bg-zinc-600'
+    };
+
+    function setStatusLine(id, tone, message) {
+      document.getElementById(`${id}Dot`).className = `w-2 h-2 rounded-full flex-shrink-0 ${STATUS_TONES[tone]}`;
+      document.getElementById(`${id}StatusText`).textContent = message;
+    }
+
+    function updateSyncUI() {
+      const pendingCount = Object.keys(pendingChanges).length;
+      const pendingLabel = `${pendingCount} ${pendingCount === 1 ? 'Änderung' : 'Änderungen'}`;
+      const hasToken = !!getGithubToken();
+      const total = Object.keys(globalMapping).length;
+
+      // Zeile 1: von Hand eingetragene Namen
+      let tone;
+      let message;
+      if (syncStatus.state === 'loading') {
+        tone = 'busy';
+        message = 'Wird von GitHub geladen…';
+      } else if (syncStatus.state === 'saving') {
+        tone = 'busy';
+        message = 'Speichere auf GitHub…';
+      } else if (syncStatus.state === 'error') {
+        tone = 'error';
+        message = syncStatus.message + (pendingCount ? ` · ${pendingLabel} vorerst nur in diesem Browser` : '');
+      } else if (pendingCount > 0 && hasToken) {
+        tone = 'warn';
+        message = `${pendingLabel} ${pendingCount === 1 ? 'wird' : 'werden'} gleich gespeichert…`;
+      } else if (pendingCount > 0) {
+        tone = 'warn';
+        message = `${pendingLabel} nur in diesem Browser – zum Speichern für alle GitHub-Zugang einrichten`;
+      } else {
+        tone = 'ok';
+        message = `${total} ${total === 1 ? 'Name' : 'Namen'} gespeichert · für alle sichtbar${hasToken ? '' : ' · nur lesen'}`;
+      }
+      setStatusLine('sync', tone, message);
+
+      // Zeile 2: automatisch aus Discord
+      const memberCount = Object.keys(discordMembers).length;
+      const missing = parsedRecords.filter(r => r.payout > 0 && !r.discordUser).length;
+      let membersTone;
+      let membersMessage;
+      if (membersStatus.state === 'loading') {
+        membersTone = 'busy';
+        membersMessage = 'Wird geladen…';
+      } else if (membersStatus.state === 'running') {
+        membersTone = 'busy';
+        membersMessage = 'Abgleich mit Discord läuft… (ca. 1 Minute)';
+      } else if (membersStatus.state === 'error') {
+        membersTone = 'error';
+        membersMessage = membersStatus.message;
+      } else if (memberCount === 0) {
+        membersTone = 'off';
+        membersMessage = 'Noch nicht eingerichtet – ein Discord-Bot ordnet Nicknames automatisch den Usernames zu';
+      } else {
+        membersTone = 'ok';
+        membersMessage = `${memberCount} Mitglieder bekannt`;
+      }
+      if (missing > 0 && membersStatus.state !== 'running') {
+        membersMessage += ` · ${missing} ${missing === 1 ? 'Person' : 'Personen'} noch ohne Discord-Namen`;
+      }
+      setStatusLine('members', membersTone, membersMessage);
+
+      document.getElementById('syncNowBtn').classList.toggle('hidden', !(hasToken && pendingCount > 0 && syncStatus.state !== 'saving'));
+      document.getElementById('syncSetupBtn').classList.toggle('hidden', hasToken);
+      const membersBtn = document.getElementById('membersUpdateBtn');
+      membersBtn.classList.toggle('hidden', !hasToken);
+      membersBtn.disabled = membersStatus.state === 'running';
+      membersBtn.querySelector('span').textContent = membersStatus.state === 'running' ? 'Läuft…' : 'Aus Discord holen';
+      document.getElementById('membersSetupBtn').classList.toggle('hidden', memberCount > 0 || membersStatus.state === 'running');
+
+      const tokenStatus = document.getElementById('tokenStatus');
+      tokenStatus.textContent = hasToken ? 'Token hinterlegt ✓' : 'Kein Token hinterlegt';
+      tokenStatus.className = `text-xs font-mono ${hasToken ? 'text-emerald-400' : 'text-zinc-500'}`;
+
+      refreshSyncMarks();
+    }
+
+    // Discord-Usernames: 2–32 Zeichen, nur Buchstaben, Ziffern, _ und .
+    const DISCORD_USERNAME_PATTERN = /^[a-z0-9_.]{2,32}$/i;
+
+    const MARK_TONES = {
+      rose: 'bg-rose-500/10 text-rose-300 border-rose-500/25',
+      amber: 'bg-amber-500/10 text-amber-300 border-amber-500/25',
+      indigo: 'bg-indigo-500/15 text-indigo-200 border-indigo-400/30',
+      emerald: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/25'
+    };
+
+    function syncMarkInfo(rec) {
+      const key = mappingKey(rec.name);
+      if (!rec.discordUser) return { text: '', title: '', tone: null };
+      if (!DISCORD_USERNAME_PATTERN.test(rec.discordUser)) {
+        return { text: 'Prüfen', title: 'Sieht nicht wie ein Discord-Username aus (nur a–z, 0–9, _ und ., 2–32 Zeichen, keine Leerzeichen)', tone: 'rose' };
+      }
+      if (key in pendingChanges) {
+        return { text: 'Lokal', title: 'Noch nicht für alle gespeichert', tone: 'amber' };
+      }
+      if (!discordMapping[key] && discordMembers[key]) {
+        return { text: 'Discord', title: 'Automatisch aus Discord übernommen', tone: 'indigo' };
+      }
+      return { text: '✓', title: 'Gespeichert – für alle sichtbar', tone: 'emerald' };
+    }
+
+    function syncMarkClass(info) {
+      const base = 'discord-sync-mark absolute right-2 top-1/2 -translate-y-1/2 px-1.5 py-1 rounded-md border text-[10px] font-semibold leading-none';
+      return info.tone ? `${base} ${MARK_TONES[info.tone]}` : `${base} hidden`;
+    }
+
+    function refreshSyncMarks() {
+      document.querySelectorAll('.record-row').forEach(row => {
+        const rec = parsedRecords.find(r => r.id === row.dataset.id);
+        const mark = row.querySelector('.discord-sync-mark');
+        if (!rec || !mark) return;
+        const info = syncMarkInfo(rec);
+        mark.className = syncMarkClass(info);
+        mark.textContent = info.text;
+        mark.title = info.title;
+      });
     }
 
     // ==========================================
@@ -669,8 +1275,8 @@ Beispiel:
       const rate = rankInfo ? rankInfo.rate : 0;
       const payout = Math.round(decimalHours * rate);
 
-      // Persistent Discord Mapping
-      const savedDiscordUser = discordMapping[callsign] || '';
+      // Discord-Zuordnung über den Namen (bleibt bei Beförderung / neuer Dienstnummer erhalten)
+      const savedDiscordUser = lookupDiscordUser(name);
 
       return {
         id: 'rec_' + Math.random().toString(36).substring(2, 9),
@@ -715,6 +1321,20 @@ Beispiel:
         }
       }
 
+      // Alte, nach Dienstnummer gespeicherte Namen einmalig auf den Namen übertragen
+      let migratedLegacy = false;
+      for (const item of newRecords) {
+        const legacyVal = legacyMapping[item.callsign];
+        if (!legacyVal) continue;
+        if (!item.discordUser) {
+          item.discordUser = legacyVal.replace(/^@+/, '').trim();
+          setDiscordName(item.name, item.discordUser);
+        }
+        delete legacyMapping[item.callsign];
+        migratedLegacy = true;
+      }
+      if (migratedLegacy) saveDiscordMappingToStorage();
+
       parsedRecords = newRecords;
       renderAll();
     }
@@ -723,6 +1343,7 @@ Beispiel:
       updateKPIs();
       renderRecordsList();
       updateFilterCounts();
+      updateSyncUI();
     }
 
     function updateKPIs() {
@@ -884,12 +1505,14 @@ Beispiel:
         const hasDiscordUser = cleanDiscordUser.length > 0;
         
         const botCommand = hasDiscordUser && !isZero
-          ? `/economy add user:@${cleanDiscordUser} money:${rec.payout}`
+          ? `/economy add user:@${cleanDiscordUser} amount:${rec.payout} location:wallet`
           : '';
+        const syncMark = syncMarkInfo(rec);
 
         return `
-          <div data-id="${rec.id}" class="record-row p-4 sm:p-5 transition-all duration-200 ${rec.paid ? 'row-completed' : (isZero ? 'row-zero-payout' : 'hover:bg-white/[0.02]')} flex flex-col gap-4 animate-fadeInUp">
-            
+          <div data-id="${rec.id}" class="record-row relative p-4 sm:p-5 sm:pl-6 transition-all duration-200 ${rec.paid ? 'row-completed' : (isZero ? 'row-zero-payout' : 'hover:bg-white/[0.02]')} flex flex-col gap-4 animate-fadeInUp">
+            <span class="${rowAccentClass(rec)}"></span>
+
             <!-- Obere Zeile: Metadaten, Rang, Name, Zeit & Betrag -->
             <div class="flex flex-wrap items-center justify-between gap-3">
               
@@ -900,7 +1523,7 @@ Beispiel:
                 <label class="relative flex items-center cursor-pointer select-none">
                   <input type="checkbox" ${rec.paid ? 'checked' : ''} onchange="togglePaidStatus('${rec.id}')" class="peer sr-only">
                   <div class="w-5 h-5 rounded-lg border border-white/20 bg-[#0A0E18] peer-checked:bg-emerald-500 peer-checked:border-emerald-500 flex items-center justify-center transition-all">
-                    <svg class="w-3.5 h-3.5 text-black font-extrabold opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-3.5 h-3.5 text-black font-extrabold ${rec.paid ? 'opacity-100' : 'opacity-0'} transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                     </svg>
                   </div>
@@ -908,7 +1531,7 @@ Beispiel:
 
                 <!-- Dienstnummer Badge -->
                 <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-mono font-bold ${rec.rankBg} ${rec.rankBorder} ${rec.rankColor} border shadow-sm">
-                  [${rec.callsign}]
+                  [${escapeHtml(rec.callsign)}]
                 </span>
 
                 <!-- Name & Rangbezeichnung -->
@@ -916,6 +1539,7 @@ Beispiel:
                   <div class="member-name text-sm sm:text-base font-bold text-white tracking-tight truncate flex items-center gap-2">
                     <span>${escapeHtml(rec.name)}</span>
                     ${isZero ? '<span class="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-white/[0.05] text-zinc-400 border border-white/5">0 € Betrag</span>' : ''}
+                    ${rec.paid ? '<span class="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-300 border border-emerald-500/25">Erledigt</span>' : ''}
                   </div>
                   <div class="text-xs text-zinc-400 flex items-center gap-1.5 mt-0.5">
                     <span>${escapeHtml(rec.rankName)}</span>
@@ -959,10 +1583,11 @@ Beispiel:
                     @
                   </span>
                   <input type="text" 
-                    placeholder="Discord-User eingeben..." 
+                    placeholder="Discord-Username eintragen…"
                     value="${escapeHtml(cleanDiscordUser)}"
-                    oninput="updateDiscordUser('${rec.id}', '${rec.callsign}', this.value)"
-                    class="w-full bg-[#080B12] text-zinc-200 font-mono text-xs pl-7 pr-3 py-2 rounded-xl border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none transition-all placeholder:text-zinc-600">
+                    oninput="updateDiscordUser('${rec.id}', this.value)"
+                    class="discord-input w-full bg-[#080B12] text-zinc-200 font-mono text-xs pl-7 pr-20 py-2 rounded-xl border ${!hasDiscordUser && !isZero ? 'border-amber-500/30' : 'border-white/10'} focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 outline-none transition-all placeholder:text-zinc-600">
+                  <span class="${syncMarkClass(syncMark)}" title="${syncMark.title}">${syncMark.text}</span>
                 </div>
               </div>
 
@@ -973,8 +1598,8 @@ Beispiel:
                     ${isZero 
                       ? `<span class="text-zinc-500 italic">Kein Command nötig (Auszahlung beträgt 0 €)</span>`
                       : (hasDiscordUser 
-                        ? `<span class="text-indigo-400 font-semibold">/economy add</span> <span class="text-zinc-400">user:</span><span class="text-indigo-300 font-semibold">@${escapeHtml(cleanDiscordUser)}</span> <span class="text-zinc-400">money:</span><span class="text-emerald-400 font-bold">${rec.payout}</span>`
-                        : `<span class="text-zinc-600 italic">Warte auf Discord-User...</span>`
+                        ? `<span class="text-indigo-400 font-semibold">/economy add</span> <span class="text-zinc-400">user:</span><span class="text-indigo-300 font-semibold">@${escapeHtml(cleanDiscordUser)}</span> <span class="text-zinc-400">amount:</span><span class="text-emerald-400 font-bold">${rec.payout}</span> <span class="text-zinc-400">location:</span><span class="text-amber-300 font-semibold">wallet</span>`
+                        : `<span class="text-amber-300/70 italic">Discord-Username fehlt – links eintragen</span>`
                       )
                     }
                   </div>
@@ -985,14 +1610,14 @@ Beispiel:
               <div class="lg:col-span-2 flex items-center justify-end gap-1.5">
                 
                 <!-- Copy Command Button -->
-                <button onclick="copyCommand('${escapeJs(botCommand)}', this)" 
+                <button data-command="${escapeHtml(botCommand)}" onclick="copyCommand(this.dataset.command, this)"
                   ${isZero || !hasDiscordUser ? 'disabled' : ''}
                   title="${isZero ? 'Kein Command bei 0 €' : (!hasDiscordUser ? 'Bitte zuerst Discord-Username eingeben' : 'Command kopieren')}"
                   class="flex-1 lg:flex-initial flex items-center justify-center gap-1.5 px-3 py-2 ${!isZero && hasDiscordUser ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_12px_-2px_rgba(99,102,241,0.5)]' : 'bg-white/[0.03] text-zinc-600 border border-white/5 cursor-not-allowed'} rounded-xl text-xs font-semibold font-mono transition-all active:scale-95">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                   </svg>
-                  <span>Befehl</span>
+                  <span>Kopieren</span>
                 </button>
 
                 <!-- Copy Just Amount Button -->
@@ -1010,23 +1635,27 @@ Beispiel:
       }).join('');
     }
 
+    // Farbstreifen links: grün = erledigt, gelb = Discord-Name fehlt, lila = bereit, grau = 0 €
+    function rowAccentClass(rec) {
+      let color = 'bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.6)]';
+      if (rec.paid) color = 'bg-emerald-500/70';
+      else if (rec.payout === 0) color = 'bg-zinc-700';
+      else if (!rec.discordUser) color = 'bg-amber-400/80';
+      return `row-accent absolute left-0 top-4 bottom-4 w-[3px] rounded-r-full ${color}`;
+    }
+
     // ==========================================
     // 5. DISCORD MAPPING & ACTIONS
     // ==========================================
-    window.updateDiscordUser = function(recId, callsign, rawVal) {
+    window.updateDiscordUser = function(recId, rawVal) {
       const cleanVal = rawVal.replace(/^@+/, '').trim();
-      
+
       const rec = parsedRecords.find(r => r.id === recId);
       if (rec) {
         rec.discordUser = cleanVal;
+        // Speichert lokal und lädt nach kurzer Pause auf GitHub hoch
+        setDiscordName(rec.name, cleanVal);
       }
-
-      if (cleanVal.length > 0) {
-        discordMapping[callsign] = cleanVal;
-      } else {
-        delete discordMapping[callsign];
-      }
-      saveDiscordMappingToStorage();
 
       updateKPIs();
       
@@ -1035,21 +1664,30 @@ Beispiel:
       if (rowEl && rec) {
         const isZero = rec.payout === 0;
         const hasDiscordUser = cleanVal.length > 0;
-        const botCommand = hasDiscordUser && !isZero ? `/economy add user:@${cleanVal} money:${rec.payout}` : '';
-        
+        const botCommand = hasDiscordUser && !isZero ? `/economy add user:@${cleanVal} amount:${rec.payout} location:wallet` : '';
+
+        const accent = rowEl.querySelector('.row-accent');
+        if (accent) accent.className = rowAccentClass(rec);
+        const input = rowEl.querySelector('.discord-input');
+        if (input) {
+          const missing = !hasDiscordUser && !isZero;
+          input.classList.toggle('border-amber-500/30', missing);
+          input.classList.toggle('border-white/10', !missing);
+        }
+
         const previewBox = rowEl.querySelector('.lg\\:col-span-6 .truncate');
         if (previewBox) {
           previewBox.innerHTML = isZero
             ? `<span class="text-zinc-500 italic">Kein Command nötig (Auszahlung beträgt 0 €)</span>`
             : (hasDiscordUser 
-              ? `<span class="text-indigo-400 font-semibold">/economy add</span> <span class="text-zinc-400">user:</span><span class="text-indigo-300 font-semibold">@${escapeHtml(cleanVal)}</span> <span class="text-zinc-400">money:</span><span class="text-emerald-400 font-bold">${rec.payout}</span>`
-              : `<span class="text-zinc-600 italic">Warte auf Discord-User...</span>`
+              ? `<span class="text-indigo-400 font-semibold">/economy add</span> <span class="text-zinc-400">user:</span><span class="text-indigo-300 font-semibold">@${escapeHtml(cleanVal)}</span> <span class="text-zinc-400">amount:</span><span class="text-emerald-400 font-bold">${rec.payout}</span> <span class="text-zinc-400">location:</span><span class="text-amber-300 font-semibold">wallet</span>`
+              : `<span class="text-amber-300/70 italic">Discord-Username fehlt – links eintragen</span>`
             );
         }
 
         const btn = rowEl.querySelector('button[onclick^="copyCommand"]');
         if (btn) {
-          btn.setAttribute('onclick', `copyCommand('${escapeJs(botCommand)}', this)`);
+          btn.dataset.command = botCommand;
           if (hasDiscordUser && !isZero) {
             btn.disabled = false;
             btn.className = 'flex-1 lg:flex-initial flex items-center justify-center gap-1.5 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_12px_-2px_rgba(99,102,241,0.5)] rounded-xl text-xs font-semibold font-mono transition-all active:scale-95';
@@ -1204,10 +1842,6 @@ Beispiel:
         .replace(/'/g, '&#039;');
     }
 
-    function escapeJs(str) {
-      if (!str) return '';
-      return String(str).replace(/'/g, "\\'").replace(/"/g, '\\"');
-    }
 
     // ==========================================
     // 7. EVENT LISTENERS & BOOTSTRAP
@@ -1297,14 +1931,14 @@ Beispiel:
         });
       });
 
-      // Alle fertigen Commands kopieren (Nur Einträge > 0 €)
+      // Alle fertigen Commands kopieren (Nur offene Einträge > 0 €, bereits erledigte nicht doppelt auszahlen)
       copyAllCommandsBtn.addEventListener('click', () => {
         const commands = parsedRecords
-          .filter(rec => rec.payout > 0 && rec.discordUser && rec.discordUser.trim().length > 0)
-          .map(rec => `/economy add user:@${rec.discordUser.trim().replace(/^@+/, '')} money:${rec.payout}`);
+          .filter(rec => rec.payout > 0 && !rec.paid && rec.discordUser && rec.discordUser.trim().length > 0)
+          .map(rec => `/economy add user:@${rec.discordUser.trim().replace(/^@+/, '')} amount:${rec.payout} location:wallet`);
 
         if (commands.length === 0) {
-          showToast('Keine fertigen Commands mit hinterlegtem Discord-User vorhanden.', 'warn');
+          showToast('Keine offenen Commands mit hinterlegtem Discord-User vorhanden.', 'warn');
           return;
         }
 
@@ -1353,17 +1987,57 @@ Beispiel:
         showToast('Stundensätze auf Standardwerte zurückgesetzt.', 'info');
       });
 
-      // Discord-Mapping leeren
+      // Lokale Discord-Daten leeren (globale Namen auf GitHub bleiben erhalten)
       clearMappingBtn.addEventListener('click', () => {
-        if (confirm('Möchtest du wirklich alle gespeicherten Discord-User-Verknüpfungen löschen?')) {
-          discordMapping = {};
-          localStorage.removeItem('melonly_discord_mapping_v3');
-          for (const rec of parsedRecords) {
-            rec.discordUser = '';
-          }
-          renderAll();
-          showToast('Alle Discord-Mappings gelöscht.', 'info');
+        if (confirm('Lokale Discord-Daten löschen? Noch nicht auf GitHub gespeicherte Änderungen gehen verloren. Die globalen Namen bleiben erhalten.')) {
+          pendingChanges = {};
+          legacyMapping = {};
+          rebuildDiscordMapping();
+          saveDiscordMappingToStorage();
+          refreshRecordsFromMapping();
+          showToast('Lokale Discord-Daten gelöscht.', 'info');
+          loadGlobalMapping();
         }
+      });
+
+      // GitHub-Sync
+      const githubTokenInput = document.getElementById('githubTokenInput');
+      document.getElementById('syncReloadBtn').addEventListener('click', () => {
+        loadGlobalMapping();
+        loadDiscordMembers();
+      });
+      document.getElementById('membersUpdateBtn').addEventListener('click', () => triggerMembersUpdate());
+      document.getElementById('membersSetupBtn').addEventListener('click', () => {
+        const botSetup = document.getElementById('discordBotSetup');
+        settingsPanel.classList.remove('hidden');
+        botSetup.open = true;
+        botSetup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      document.getElementById('syncNowBtn').addEventListener('click', () => {
+        clearTimeout(syncTimer);
+        pushPendingToGithub();
+      });
+      document.getElementById('syncSetupBtn').addEventListener('click', () => {
+        settingsPanel.classList.remove('hidden');
+        document.getElementById('githubSyncSettings').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        githubTokenInput.focus();
+      });
+      document.getElementById('saveTokenBtn').addEventListener('click', () => {
+        const token = githubTokenInput.value.trim();
+        if (!token) {
+          showToast('Bitte zuerst einen GitHub-Token einfügen.', 'warn');
+          return;
+        }
+        localStorage.setItem(STORAGE_KEYS.token, token);
+        githubTokenInput.value = '';
+        showToast('GitHub-Token gespeichert. Discord-Namen werden jetzt global gespeichert.', 'success');
+        loadGlobalMapping();
+      });
+      document.getElementById('removeTokenBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEYS.token);
+        clearTimeout(syncTimer);
+        updateSyncUI();
+        showToast('GitHub-Token aus diesem Browser entfernt.', 'info');
       });
 
       // Initial sauber und leer starten
@@ -1371,6 +2045,8 @@ Beispiel:
       rawLineCount.textContent = '0 Zeilen';
       parsedRecords = [];
       renderAll();
+      loadGlobalMapping();
+      loadDiscordMembers();
     });
   </script>
 </body>
